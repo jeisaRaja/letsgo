@@ -18,6 +18,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	files := []string{
 		"../../ui/html/home.page.tmpl",
 		"../../ui/html/base.layout.tmpl",
+		"../../ui/html/footer.partial.tmpl",
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
@@ -31,7 +32,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
-	w.Write([]byte("Display the home page"))
 }
 func snippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
