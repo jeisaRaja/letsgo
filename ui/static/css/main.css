@@ -1,12 +1,14 @@
 html{
   font-size: 62.5%;
 }
+
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   max-width: 100%;
 }
+
 body {
   background-color: rgb(255, 255, 255);
   padding: 5rem;
@@ -24,4 +26,14 @@ body {
 
 footer{
   margin-top: 7.2rem;
+  position: absolute;
+  bottom: 0;
+  background-color: rgb(245, 245, 245);
+  width: 100%;
+  text-align: center;
+  padding: 1.6rem;
+}
+
+footer>h5{
+  margin-bottom: 3.2rem;
 }
