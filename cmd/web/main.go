@@ -12,6 +12,7 @@ func main() {
 	flag.Parse()
 
 	log.Println(*addr)
+	// The flag parse didnt work on ubuntu virtualbox, there is nothing with the code as in windows, it works perfectly
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet", snippet)
