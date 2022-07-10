@@ -16,7 +16,7 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errlog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	addr := flag.String("addr", ":4000", "HTTP network address")
+	addr := flag.String("addr", "4000", "HTTP network address")
 
 	flag.Parse()
 

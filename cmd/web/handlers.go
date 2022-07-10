@@ -21,8 +21,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		app.errorLog.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.serverError(w, err)
 		return
 	}
 	err = ts.Execute(w, nil)
@@ -36,7 +35,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 func (app *application) snippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
+		app.notFound(w, 404)
 		return
 	}
 	fmt.Fprintf(w, "Displaying %d", id)
@@ -47,7 +46,7 @@ func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Allow", "POST") // This is for adding another key-value pair to the header
 		// w.WriteHeader(405)
 		// w.Write([]byte("This method is not supported \n"))
-		http.Error(w, "Method Not Allowed", 405)
+		app.clienError(w, http.StatusMethodNotAllowed)
 		return
 	}
 	w.Write(([]byte("Create a snippet...")))

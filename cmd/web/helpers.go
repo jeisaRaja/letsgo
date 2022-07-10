@@ -3,13 +3,20 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"runtime/debug"
 )
 
-func serverError() {
-	fmt.Print()
+func (app *application) serverError(w http.ResponseWriter, err error) {
+	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
+	app.errorLog.Output(3, trace)
+
+	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
-func clienError() {
-	fmt.Fprint()
-	http.HandleFunc()
+func (app *application) clienError(w http.ResponseWriter, status int) {
+	http.Error(w, http.StatusText(status), status)
+}
+
+func (app *application) notFound(w http.ResponseWriter, status int) {
+	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
