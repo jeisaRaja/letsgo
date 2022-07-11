@@ -19,6 +19,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		"./ui/html/base.layout.tmpl",
 		"./ui/html/footer.partial.tmpl",
 	}
+
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.serverError(w, err)
@@ -35,17 +36,22 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 func (app *application) snippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
+		app.infoLog.Println("No ID found")
 		app.notFound(w, 404)
 		return
 	}
 	fmt.Fprintf(w, "Displaying %d", id)
+
 	// w.Write([]byte("Display a specific snippet"))
 }
+
 func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.Header().Set("Allow", "POST") // This is for adding another key-value pair to the header
+
 		// w.WriteHeader(405)
 		// w.Write([]byte("This method is not supported \n"))
+
 		app.clienError(w, http.StatusMethodNotAllowed)
 		return
 	}
