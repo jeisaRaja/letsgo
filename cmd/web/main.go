@@ -12,9 +12,9 @@ import (
 )
 
 type application struct {
-	infoLog    *log.Logger
-	errorLog   *log.Logger
-	snippetbox *mysql.SnippetModel
+	infoLog  *log.Logger
+	errorLog *log.Logger
+	snippets *mysql.SnippetModel
 }
 
 func main() {
@@ -35,9 +35,9 @@ func main() {
 	defer db.Close()
 
 	app := &application{
-		infoLog:    infoLog,
-		errorLog:   errlog,
-		snippetbox: &mysql.SnippetModel{DB: db},
+		infoLog:  infoLog,
+		errorLog: errlog,
+		snippets: &mysql.SnippetModel{DB: db},
 	}
 	*addr = "127.0.0.1:" + *addr
 

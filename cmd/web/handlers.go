@@ -51,7 +51,10 @@ func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
 
 		// w.WriteHeader(405)
 		// w.Write([]byte("This method is not supported \n"))
-
+		title := "Fortune Cookie"
+		content := "Fortune cookie, berbentuk hati, hey hey hey"
+		expires := "7"
+		app.snippets.Insert(title, content, expires)
 		app.clienError(w, http.StatusMethodNotAllowed)
 		return
 	}
