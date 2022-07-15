@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+
+	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -40,8 +42,15 @@ func (app *application) snippet(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w, 404)
 		return
 	}
-	fmt.Fprintf(w, "Displaying %d", id)
+	s, err := app.snippets.Get(id)
+	if err == models.ErrNoRecord {
+		app.notFound(w, 500)
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
 
+	fmt.Fprintf(w, "%v", s)
 	// w.Write([]byte("Display a specific snippet"))
 }
 
