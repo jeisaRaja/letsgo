@@ -69,3 +69,35 @@ func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write(([]byte("Create a snippet...")))
 }
+
+func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		app.notFound(w, 404)
+		return
+	}
+	s, err := app.snippets.Get(id)
+	if err == models.ErrNoRecord {
+		app.notFound(w, 404)
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+	}
+
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	err = ts.Execute(w, s)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+}
