@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"log"
 
 	"jeisaRaja.git/snippetbox/pkg/models"
 )
@@ -36,31 +37,44 @@ func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
 	} else if err != nil {
 		return nil, err
 	}
+	stmt2 := "SELECT id,title,content,created,expires FROM snippets WHERE expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10"
+	test, err := m.DB.Query(stmt2)
+	if err != nil {
+		return nil, nil
+	}
+	defer test.Close()
+	out := []*models.Snippet{}
+
+	for test.Next() {
+		s2 := &models.Snippet{}
+		err := test.Scan(&s2.ID, &s2.Title, &s2.Content, &s2.Created, &s2.Expires)
+		if err != nil {
+			return nil, nil
+		}
+		out = append(out, s2)
+	}
+	log.Print(out)
 	return s, nil
 }
 
 // This will return the 10 most recently created snippets.
 func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
-	stmt := `SELECT id,title,content,created,expires FROM snippets WHERE expires > UTC_TIMESTAMP()`
-	rows, err := m.DB.Query(stmt)
+	stmts := "SELECT id,title,content,created,expires FROM snippets WHERE expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10"
+	rows, err := m.DB.Query(stmts)
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
-
 	defer rows.Close()
-
-	snippets := []*models.Snippet{}
+	s := []*models.Snippet{}
 
 	for rows.Next() {
-		s := &models.Snippet{}
-		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
-		if err != nil {
-			return nil, err
+		tmp := &models.Snippet{}
+		err = rows.Scan(&tmp.ID, &tmp.Title, &tmp.Content, &tmp.Created, &tmp.Expires)
+		if err == sql.ErrNoRows {
+			return nil, nil
 		}
-		snippets = append(snippets, s)
+		s = append(s, tmp)
 	}
-	if err == rows.Err() || err != nil {
-		return nil, err
-	}
-	return snippets, nil
+	log.Print(s)
+	return s, nil
 }

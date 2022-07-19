@@ -5,7 +5,21 @@
 {{define "body"}}
 <div class="subBody">
   <h3>Latest Snippets</h3>
-  {{if .Snippets}} <h4>There are some snippets</h4>
+  {{if .Snippets}}
+  <table>
+    <tr>
+    <th>Title</th>
+    <th>Created</th>
+    <th>ID</th>
+    </tr>
+    {{range .Snippets}}
+    <tr>
+    <td><a href='/snippet?id={{.ID}}'>{{.Title}}</a></td>
+    <td>{{.Created}}</td>
+    <td>#{{.ID}}</td>
+    </tr>
+  {{end}}
+  </table>
   {{else}}<h4>There is no snippet</h4>
   {{end}}
 </div>
