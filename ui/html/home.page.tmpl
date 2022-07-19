@@ -5,5 +5,8 @@
 {{define "body"}}
 <div class="subBody">
   <h3>Latest Snippets</h3>
+  {{if .Snippets}} <h4>There are some snippets</h4>
+  {{else}}<h4>There is no snippet</h4>
+  {{end}}
 </div>
 {{end}}

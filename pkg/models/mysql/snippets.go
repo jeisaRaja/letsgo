@@ -27,7 +27,7 @@ func (m *SnippetModel) Insert(title, content, expires string) (int, error) {
 
 // This will return a specific snippet based on its id.
 func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
-	stmt := `SELECT id,title,content,created,expires FROM snippets where expires > UTC_TIMESTAMP() AND id=?`
+	stmt := `SELECT id,title,content,created,expires FROM snippets WHERE expires > UTC_TIMESTAMP() AND id=?`
 	row := m.DB.QueryRow(stmt, id)
 	s := &models.Snippet{}
 	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
@@ -41,16 +41,19 @@ func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
 
 // This will return the 10 most recently created snippets.
 func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
-	stmt := `SELECT * FROM snippets WHERE UTC_TIMESTAMP()>expires ORDER BY created DESC LIMIT 10`
-	snippets := []*models.Snippet{}
+	stmt := `SELECT id,title,content,created,expires FROM snippets WHERE expires > UTC_TIMESTAMP()`
 	rows, err := m.DB.Query(stmt)
-	if err == sql.ErrNoRows || err != nil {
+	if err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
+
+	snippets := []*models.Snippet{}
+
 	for rows.Next() {
 		s := &models.Snippet{}
-		err := rows.Scan(s.ID, s.Title, s.Content, s.Created, s.Expires)
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
 		if err != nil {
 			return nil, err
 		}
@@ -59,6 +62,5 @@ func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
 	if err == rows.Err() || err != nil {
 		return nil, err
 	}
-
 	return snippets, nil
 }
