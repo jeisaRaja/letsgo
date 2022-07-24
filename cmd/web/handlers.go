@@ -16,17 +16,16 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// array of templates:
-	files := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
+	// files := []string{
+	// 	"./ui/html/home.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// 	return
+	// }
 
 	s, err := app.snippets.Latest()
 	if err != nil {
@@ -35,8 +34,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := &templateData{Snippets: s}
-
-	err = ts.Execute(w, data)
+	app.render(w, r, "home.page.tmpl", data)
+	// err = ts.Execute(w, data)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
