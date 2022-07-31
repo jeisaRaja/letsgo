@@ -37,23 +37,6 @@ func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
 	} else if err != nil {
 		return nil, err
 	}
-	stmt2 := "SELECT id,title,content,created,expires FROM snippets WHERE expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10"
-	test, err := m.DB.Query(stmt2)
-	if err != nil {
-		return nil, nil
-	}
-	defer test.Close()
-	out := []*models.Snippet{}
-
-	for test.Next() {
-		s2 := &models.Snippet{}
-		err := test.Scan(&s2.ID, &s2.Title, &s2.Content, &s2.Created, &s2.Expires)
-		if err != nil {
-			return nil, nil
-		}
-		out = append(out, s2)
-	}
-	log.Print(out)
 	return s, nil
 }
 

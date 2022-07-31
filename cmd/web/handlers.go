@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -15,18 +13,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	// array of templates:
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	app.serverError(w, err)
-	// 	return
-	// }
-
 	s, err := app.snippets.Latest()
 	if err != nil {
 		app.serverError(w, err)
@@ -35,7 +21,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	data := &templateData{Snippets: s}
 	app.render(w, r, "home.page.tmpl", data)
-	// err = ts.Execute(w, data)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
@@ -43,31 +28,9 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) snippet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	if err != nil || id < 1 {
-		app.infoLog.Println("No ID found")
-		app.notFound(w, 404)
-		return
-	}
-	s, err := app.snippets.Get(id)
-	if err == models.ErrNoRecord {
-		app.notFound(w, 500)
-	} else if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	fmt.Fprintf(w, "%v", s)
-	// w.Write([]byte("Display a specific snippet"))
-}
-
 func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.Header().Set("Allow", "POST") // This is for adding another key-value pair to the header
-
-		// w.WriteHeader(405)
-		// w.Write([]byte("This method is not supported \n"))
 		title := "Fortune Cookie"
 		content := "Fortune cookie, berbentuk hati, hey hey hey"
 		expires := "7"
@@ -92,20 +55,5 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 	data := &templateData{Snippet: s}
-	files := []string{
-		"./ui/html/show.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
+	app.render(w, r, "show.page.tmpl", data)
 }

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -21,14 +23,26 @@ func (app *application) notFound(w http.ResponseWriter, status int) {
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
+func (app *application) addDefaultData(td *templateData, r *http.Request) *templateData {
+	timeNow := time.Now().Year()
+	if td == nil {
+		td = &templateData{}
+	}
+	td.CurrentYear = timeNow
+	return td
+
+}
+
 func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
+	buffer := new(bytes.Buffer)
 	ts, ok := app.templateCache[name]
 	if !ok {
 		app.serverError(w, fmt.Errorf("The template of %s error", name))
 		return
 	}
-	err := ts.Execute(w, td)
+	err := ts.Execute(buffer, app.addDefaultData(td, r))
 	if err != nil {
 		return
 	}
+	buffer.WriteTo(w)
 }
