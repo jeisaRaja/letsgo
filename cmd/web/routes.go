@@ -2,15 +2,20 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/bmizerany/pat"
+	"github.com/justinas/alice"
 )
 
-func (app *application) routes() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.create_snippet)
+func (app *application) routes() http.Handler {
+	standardMiddleware := alice.New(app.panicRecovery, app.logRequest, secureHeaders)
+	mux := pat.New()
+	mux.Get("/", http.HandlerFunc(app.home))
+	mux.Get("/snippet/create", http.HandlerFunc(app.create_snippet_form))
+	mux.Post("/snippet/create", http.HandlerFunc(app.create_snippet))
+	mux.Get("/snippet/:id", http.HandlerFunc(app.showSnippet))
 	fileserver := http.FileServer(http.Dir("./ui/static"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileserver))
+	mux.Get("/static/", http.StripPrefix("/static", fileserver))
 
-	return mux
+	return standardMiddleware.Then(mux)
 }

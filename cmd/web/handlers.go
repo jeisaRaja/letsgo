@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -9,10 +10,6 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// fmt.Print(r.Method)
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
 	s, err := app.snippets.Latest()
 	if err != nil {
 		app.serverError(w, err)
@@ -29,20 +26,25 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		w.Header().Set("Allow", "POST") // This is for adding another key-value pair to the header
-		title := "Fortune Cookie"
-		content := "Fortune cookie, berbentuk hati, hey hey hey"
-		expires := "7"
-		app.snippets.Insert(title, content, expires)
-		app.clienError(w, http.StatusMethodNotAllowed)
+	err := r.ParseForm()
+	if err != nil {
+		app.serverError(w, err)
+	}
+	w.Header().Set("Allow", "POST") // This is for adding another key-value pair to the header
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
+	expires := r.PostForm.Get("expires")
+	id, err := app.snippets.Insert(title, content, expires)
+	if err != nil {
+		app.serverError(w, err)
 		return
 	}
-	w.Write(([]byte("Create a snippet...")))
+	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
+
 }
 
 func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil {
 		app.notFound(w, 404)
 		return
@@ -56,4 +58,10 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	}
 	data := &templateData{Snippet: s}
 	app.render(w, r, "show.page.tmpl", data)
+}
+
+func (app *application) create_snippet_form(w http.ResponseWriter, r *http.Request) {
+
+	app.render(w, r, "create_form.page.tmpl", &templateData{})
+
 }

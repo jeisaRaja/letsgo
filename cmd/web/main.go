@@ -48,7 +48,6 @@ func main() {
 		templateCache: templateCache,
 	}
 	*addr = "127.0.0.1:" + *addr
-
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errlog,

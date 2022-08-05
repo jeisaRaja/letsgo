@@ -1,0 +1,31 @@
+{{template "base"}}
+{{define "title"}}
+Form Snippet
+{{end}}
+
+{{define "body"}}
+<div class="subBody">
+<form action="/snippet/create" method="POST">
+  <div>
+    <label>Title:</label>
+    <input type='text' name='title'>
+  </div>
+  <div>
+    <label>Content:</label>
+    <textarea name='content'></textarea>
+  </div>
+  <div>
+    <label>Delete in:</label>
+    <div class="radio">
+      <label for="oneYear">
+      <input type= "radio" name="expires"  value="365" checked id="oneYear">One Year</label>
+      <label for="oneWeek"> <input type= "radio" name="expires"  value="7" checked id="oneWeek">One Week</label>
+      <label for="oneDay"><input type= "radio" name="expires"  value="1" checked id="oneDay">One Day</label>
+    </div>
+  </div>
+  <div>
+    <button type="submit">Submit</button>
+  </div>
+</div>
+{{end}}
+
