@@ -1,26 +1,38 @@
-{{template "base"}}
+{{template "base" .}}
 {{define "title"}}
 Form Snippet
 {{end}}
+
 {{define "body"}}
 <div class="subDiv">
-    <h1>{{.FormData.title}}</h1>
     <form action="/snippet/create" method="POST">
         <div>
             <label>Title:</label>
-            <input type='text' name='title'>
+                {{with .FormError.Title}}
+                    <label class='error'>{{.}}</label>
+                {{end}}
+            <input type='text' name='title' value="{{.FormData.Get "title"}}">
         </div>
         <div>
             <label>Content:</label>
-            <textarea name='content'></textarea>
+                {{with .FormError.Content}}
+                    <label class='error'>{{.}}</label>
+                {{end}}
+            <textarea name='content'> {{.FormData.Get "content"}} </textarea>
         </div>
         <div class="radio">
+            {{with .FormError.Expire}}
+                <label class='error'>{{.}}</label>
+            {{end}}
+            {{$exp := or (.FormData.Get "expires") "365" }}
             <label for="oneYear">
-            <input type= "radio" name="expires"  value="365" checked id="oneYear"/>One Year</label>
-            <label for="oneWeek"> <input type= "radio" name="expires"  value="7" checked id="oneWeek"/>One Week</label>
-            <label for="oneDay"><input type= "radio" name="expires"  value="1" checked id="oneDay"/>One Day</label>
+                <input type= "radio" name="expires"  value="365" {{if (eq $exp "365")}}checked{{end} id="oneYear">One Year</label>
+            <label for="oneWeek">
+                <input type= "radio" name="expires"  value="7" {{if (eq $exp "7")}}checked{{end} id="oneWeek">One Week</label>
+            <label for="oneDay">
+                <input type= "radio" name="expires"  value="1" {{if (eq $exp "1")}}checked{{end} id="oneDay">One Day</label>
         </div>
-          <div>
+        <div>
             <button type="submit">Submit</button>
         </div>
     </form>

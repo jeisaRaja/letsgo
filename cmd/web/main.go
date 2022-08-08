@@ -7,8 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golangcollege/sessions"
 	"jeisaRaja.git/snippetbox/pkg/models/mysql"
 )
 
@@ -17,6 +19,7 @@ type application struct {
 	errorLog      *log.Logger
 	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
+	session       *sessions.Session
 }
 
 func main() {
@@ -27,9 +30,11 @@ func main() {
 	defaultDSN := "web:Cipinang01@/snippetbox?parseTime=true"
 	addr := flag.String("addr", "4000", "HTTP network address")
 	dsn := flag.String("dsn", defaultDSN, "MYSQL Database Pool")
-
+	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key for session")
 	flag.Parse()
 
+	session := sessions.New([]byte(*secret))
+	session.Lifetime = 12 * time.Hour
 	db, err := openDB(*dsn)
 	if err != nil {
 		errlog.Println("DB Connection Error!")
@@ -46,6 +51,7 @@ func main() {
 		errorLog:      errlog,
 		snippets:      &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
+		session:       session,
 	}
 	*addr = "127.0.0.1:" + *addr
 	srv := &http.Server{
