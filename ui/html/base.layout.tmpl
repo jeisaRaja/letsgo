@@ -14,7 +14,9 @@
 <nav>
 <a href='/'>Home</a>
 </nav>
-
+{{with .Flash}}
+<h1>{{.}}</h1>
+{{end}}
 {{template "body" .}}
 </body>
 

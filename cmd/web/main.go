@@ -27,7 +27,7 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errlog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	defaultDSN := "web:Cipinang01@/snippetbox?parseTime=true"
+	defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
 	addr := flag.String("addr", "4000", "HTTP network address")
 	dsn := flag.String("dsn", defaultDSN, "MYSQL Database Pool")
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key for session")
@@ -61,7 +61,7 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)
-	srv.ListenAndServe()
+	srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 
 }
 
