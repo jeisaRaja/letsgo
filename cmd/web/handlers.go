@@ -10,6 +10,23 @@ import (
 	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
+func (app *application) signUpForm(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "this is the sign up form")
+	return
+}
+func (app *application) signUp(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "this is the sign up post request")
+	return
+}
+func (app *application) logInForm(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "this is the log in form")
+	return
+}
+func (app *application) logIn(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "this is the log in post")
+	return
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// fmt.Print(r.Method)
 	s, err := app.snippets.Latest()
