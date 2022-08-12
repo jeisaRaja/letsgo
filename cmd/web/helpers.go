@@ -41,8 +41,10 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 		app.serverError(w, fmt.Errorf("The template of %s error", name))
 		return
 	}
+	fmt.Println(td)
 	err := ts.Execute(buffer, app.addDefaultData(td, r))
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	buffer.WriteTo(w)

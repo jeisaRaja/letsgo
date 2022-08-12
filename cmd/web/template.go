@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
-	"net/url"
 	"path/filepath"
 	"time"
 
+	"jeisaRaja.git/snippetbox/pkg/forms"
 	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
@@ -21,8 +22,7 @@ type templateData struct {
 	CurrentYear int
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
-	FormData    url.Values
-	FormError   map[string]string
+	Form        *forms.Form
 	Flash       string
 }
 
@@ -48,5 +48,6 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 		}
 		cache[name] = ts
 	}
+	fmt.Println(cache)
 	return cache, nil
 }

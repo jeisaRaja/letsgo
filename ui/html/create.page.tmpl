@@ -6,25 +6,26 @@ Form Snippet
 {{define "body"}}
 <div class="subDiv">
     <form action="/snippet/create" method="POST">
+    {{with .Form}}
         <div>
             <label>Title:</label>
-                {{with .FormError.Title}}
+                {{with .Errors.Get "title"}}
                     <label class='error'>{{.}}</label>
                 {{end}}
-            <input type='text' name='title' value="{{.FormData.Get "title"}}">
+            <input type='text' name='title' value="{{.Get "title"}}">
         </div>
         <div>
             <label>Content:</label>
-                {{with .FormError.Content}}
+                {{with .Errors.Get "content"}}
                     <label class='error'>{{.}}</label>
                 {{end}}
-            <textarea name='content'> {{.FormData.Get "content"}} </textarea>
+            <textarea name='content'>{{.Get "content"}}</textarea>
         </div>
         <div class="radio">
-            {{with .FormError.Expire}}
+            {{with .Errors.Get "Expires"}}
                 <label class='error'>{{.}}</label>
             {{end}}
-             {{$exp := or (.FormData.Get "expires") "365" }}
+             {{$exp := or (.Get "expires") "1" }}
             <label for="oneYear">
                 <input type= "radio" name="expires"  value="365" {{if (eq $exp "365")}}checked{{end}} id="oneYear">One Year</label>
             <label for="oneWeek">
@@ -35,6 +36,7 @@ Form Snippet
         <div>
             <button type="submit">Submit</button>
         </div>
+        {{end}}
     </form>
 </div>
 {{end}}

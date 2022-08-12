@@ -4,19 +4,34 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
+	"jeisaRaja.git/snippetbox/pkg/forms"
 	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
 func (app *application) signUpForm(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "this is the sign up form")
+	app.render(w, r, "signup.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
 	return
 }
 func (app *application) signUp(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "this is the sign up post request")
-	return
+	err := r.ParseForm()
+	if err != nil {
+		return
+	}
+	form := forms.New(r.PostForm)
+	form.Required("email", "password")
+	form.MatchesPattern("email", forms.EmailRX)
+	form.MinLength("password", 10)
+	if !form.Valid() {
+		app.render(w, r, "signup.page.tmpl", &templateData{
+			Form: form,
+		})
+		return
+	}
+	fmt.Fprintln(w, "Creating new user!")
+
 }
 func (app *application) logInForm(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "this is the log in form")
@@ -36,12 +51,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := &templateData{Snippets: s}
+	// fmt.Fprint(w, data)
 	app.render(w, r, "home.page.tmpl", data)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
+	return
 }
 
 func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
@@ -49,35 +66,20 @@ func (app *application) create_snippet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	inputErr := make(map[string]string)
-	w.Header().Set("Allow", "POST") // This is for adding another key-value pair to the header
-	title := r.PostForm.Get("title")
-	content := r.PostForm.Get("content")
-	expires := r.PostForm.Get("expires")
-	if strings.TrimSpace(title) == "" {
-		inputErr["Title"] = "Title cannot be empty!"
-	} else if utf8.RuneCountInString(title) > 100 {
-		inputErr["Title"] = "Maximum length for title is 100 characters"
-	}
-	if strings.TrimSpace(content) == "" {
-		inputErr["Content"] = "Content cannot be empty!"
-	}
-	if strings.TrimSpace(expires) == "" {
-		inputErr["Expires"] = "Expire date cannot be empty!"
-	} else if expires != "365" && expires != "7" && expires != "1" {
-		inputErr["Expires"] = "Expire date need to be one 1 ,7 or 365 days"
-	}
+	form := forms.New(r.PostForm)
+	form.Required("title", "content", "expires")
+	form.MaxLength("title", 100)
+	form.PermittedValues("expires", "365", "7", "1")
 
-	if len(inputErr) > 0 {
-		data := &templateData{
-			FormError: inputErr,
-			FormData:  r.PostForm,
-		}
-		fmt.Println(data)
-		app.render(w, r, "create.page.tmpl", data)
+	if !form.Valid() {
+		app.render(w, r, "create.page.tmpl", &templateData{
+			Form: form,
+		})
 		return
 	}
-	id, err := app.snippets.Insert(title, content, expires)
+
+	id, err := app.snippets.Insert(form.Get("title"), form.Get("content"), form.Get("expires"))
+
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -110,6 +112,8 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) create_snippet_form(w http.ResponseWriter, r *http.Request) {
 
-	app.render(w, r, "create.page.tmpl", &templateData{})
+	app.render(w, r, "create.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
 
 }

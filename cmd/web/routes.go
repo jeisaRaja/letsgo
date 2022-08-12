@@ -18,6 +18,9 @@ func (app *application) routes() http.Handler {
 
 	// User Registration and Login
 	mux.Get("/user/signup", dynamicMiddleware.ThenFunc(app.signUpForm))
+	mux.Post("/user/signup", dynamicMiddleware.ThenFunc(app.signUp))
+	mux.Get("/user/login", dynamicMiddleware.ThenFunc(app.logInForm))
+	mux.Post("/user/login", dynamicMiddleware.ThenFunc(app.logIn))
 	fileserver := http.FileServer(http.Dir("./ui/static"))
 	mux.Get("/static/", http.StripPrefix("/static", fileserver))
 	return standardMiddleware.Then(mux)
