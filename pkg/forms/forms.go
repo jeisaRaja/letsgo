@@ -2,6 +2,7 @@ package forms
 
 import (
 	"fmt"
+	"net/mail"
 	"net/url"
 	"regexp"
 	"strings"
@@ -13,12 +14,13 @@ type Form struct {
 	Errors errors
 }
 
-var EmailRX = regexp.MustCompile("/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/")
+var EmailRX = regexp.MustCompile("/^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/")
 
 func New(data url.Values) *Form {
 	return &Form{
 		data, errors(map[string][]string{}),
 	}
+
 }
 
 func (f *Form) Required(fields ...string) {
@@ -62,14 +64,19 @@ func (f *Form) MinLength(field string, d int) {
 		f.Errors.Add(field, fmt.Sprintf("This field is too short (minimum is %d characters)", d))
 	}
 }
-func (f *Form) MatchesPattern(field string, pattern *regexp.Regexp) {
+func (f *Form) MatchesPattern(field string) {
 	value := f.Get(field)
-	if value == "nil" {
+	if value == "" {
 		return
 	}
-	if !pattern.MatchString(value) {
-		f.Errors.Add(field, "This field is invalid")
+	mailAddress, err := mail.ParseAddress(value)
+	if err != nil {
+		f.Errors.Add(field, fmt.Sprintf("%s is not a valid %s", value, field))
 	}
+	fmt.Println(*mailAddress)
+	// if !pattern.MatchString(value) {
+	// 	f.Errors.Add(field, "This field is invalid")
+	// }
 }
 
 func (f *Form) Valid() bool {
