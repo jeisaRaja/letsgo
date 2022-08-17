@@ -31,17 +31,19 @@ func (u *UserModel) Insert(name, email, password string) error {
 }
 func (u *UserModel) Authenticate(email, password string) (int, error) {
 	var id int
-	var hashed_password []byte
-	row := u.DB.QueryRow("SELECT id, hashed_password FROM users WHERE email = ?", email)
-	err := row.Scan(&id, &hashed_password)
+	var hashedPassword []byte
+	stmt := "SELECT id, hashed_password FROM users WHERE email = ?"
+	row := u.DB.QueryRow(stmt, email)
+	err := row.Scan(&id, &hashedPassword)
 	if err == sql.ErrNoRows {
+		fmt.Println("error nya sql no row")
 		return 0, models.ErrInvalidCredentials
-	} else if err != nil {
+	}
+	if err != nil {
+		fmt.Println("error nya gak nill")
 		return 0, err
 	}
-
-	err = bcrypt.CompareHashAndPassword(hashed_password, []byte(password))
-	fmt.Println("ini errornya:", err)
+	err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(password))
 	if err == bcrypt.ErrMismatchedHashAndPassword {
 		return 0, models.ErrInvalidCredentials
 	}

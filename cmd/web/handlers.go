@@ -60,9 +60,12 @@ func (app *application) logIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id, err := app.users.Authenticate(form.Get("email"), form.Get("password"))
-	fmt.Println("idnya bro:", id)
 	if err == models.ErrInvalidCredentials {
 		form.Errors.Add("generic", "Email or Password is incorrect")
+		app.render(w, r, "login.page.tmpl", &templateData{
+			Form: form,
+		})
+		return
 	} else if err != nil {
 		app.serverError(w, err)
 		return
