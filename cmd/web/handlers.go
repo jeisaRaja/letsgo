@@ -9,6 +9,13 @@ import (
 	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
+func (app *application) logOut(w http.ResponseWriter, r *http.Request) {
+	app.session.Remove(r, "userID")
+	app.session.Put(r, "flash", "You've been logged out successfully!")
+	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+	return
+}
+
 func (app *application) signUpForm(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "signup.page.tmpl", &templateData{
 		Form: forms.New(nil),
