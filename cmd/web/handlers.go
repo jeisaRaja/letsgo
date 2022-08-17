@@ -40,11 +40,37 @@ func (app *application) signUp(w http.ResponseWriter, r *http.Request) {
 
 }
 func (app *application) logInForm(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "this is the log in form")
+	app.render(w, r, "login.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
 	return
 }
 func (app *application) logIn(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "this is the log in post")
+	err := r.ParseForm()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	form := forms.New(
+		r.PostForm,
+	)
+	form.Required("email", "password")
+	if len(form.Errors) > 0 {
+		fmt.Println(form.Errors, "error brok")
+		return
+	}
+	id, err := app.users.Authenticate(form.Get("email"), form.Get("password"))
+	fmt.Println("idnya bro:", id)
+	if err == models.ErrInvalidCredentials {
+		form.Errors.Add("generic", "Email or Password is incorrect")
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.session.Put(r, "userID", id)
+	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
+
 	return
 }
 
@@ -117,9 +143,7 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) create_snippet_form(w http.ResponseWriter, r *http.Request) {
-
 	app.render(w, r, "create.page.tmpl", &templateData{
 		Form: forms.New(nil),
 	})
-
 }

@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
@@ -29,7 +30,25 @@ func (u *UserModel) Insert(name, email, password string) error {
 	return nil
 }
 func (u *UserModel) Authenticate(email, password string) (int, error) {
-	return 0, nil
+	var id int
+	var hashed_password []byte
+	row := u.DB.QueryRow("SELECT id, hashed_password FROM users WHERE email = ?", email)
+	err := row.Scan(&id, &hashed_password)
+	if err == sql.ErrNoRows {
+		return 0, models.ErrInvalidCredentials
+	} else if err != nil {
+		return 0, err
+	}
+
+	err = bcrypt.CompareHashAndPassword(hashed_password, []byte(password))
+	fmt.Println("ini errornya:", err)
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return 0, models.ErrInvalidCredentials
+	}
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 func (u *UserModel) Get(id int) (*models.User, error) {
 	return nil, nil
