@@ -12,8 +12,8 @@ func (app *application) routes() http.Handler {
 	dynamicMiddleware := alice.New(app.session.Enable)
 	mux := pat.New()
 	mux.Get("/", dynamicMiddleware.ThenFunc(app.home))
-	mux.Get("/snippet/create", dynamicMiddleware.ThenFunc(app.create_snippet_form))
-	mux.Post("/snippet/create", dynamicMiddleware.ThenFunc(app.create_snippet))
+	mux.Get("/snippet/create", dynamicMiddleware.Append(app.requireAuthUser).ThenFunc(app.create_snippet_form))
+	mux.Post("/snippet/create", dynamicMiddleware.Append(app.requireAuthUser).ThenFunc(app.create_snippet))
 	mux.Get("/snippet/:id", dynamicMiddleware.ThenFunc(app.showSnippet))
 
 	// User Registration and Login
@@ -21,7 +21,7 @@ func (app *application) routes() http.Handler {
 	mux.Post("/user/signup", dynamicMiddleware.ThenFunc(app.signUp))
 	mux.Get("/user/login", dynamicMiddleware.ThenFunc(app.logInForm))
 	mux.Post("/user/login", dynamicMiddleware.ThenFunc(app.logIn))
-	mux.Post("/user/logout", dynamicMiddleware.ThenFunc(app.logOut))
+	mux.Post("/user/logout", dynamicMiddleware.Append(app.requireAuthUser).ThenFunc(app.logOut))
 	fileserver := http.FileServer(http.Dir("./ui/static"))
 	mux.Get("/static/", http.StripPrefix("/static", fileserver))
 	return standardMiddleware.Then(mux)
