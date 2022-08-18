@@ -9,10 +9,18 @@
 <body>
 <header>
 <h1><a href='/'>Snippetbox</a></h1>
-<h1><a href='/snippet/create'>Create Snippet</a></h1>
+
 </header>
 <nav>
 <a href='/'>Home</a>
+{{if .AuthenticatedUser}}
+<a href='/snippet/create'>Create snippet</a>
+{{end}}
+<a href='/user/login'>Login</a>
+<a href='/user/signup'>Sign Up</a>
+<form method="POST" action="/user/logout">
+<button>logout</button>
+</form>
 </nav>
 {{with .Flash}}
 <h1>{{.}}</h1>
