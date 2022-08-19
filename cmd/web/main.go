@@ -42,6 +42,7 @@ func main() {
 
 	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
+	session.SameSite = http.SameSiteStrictMode
 	db, err := openDB(*dsn)
 	if err != nil {
 		errlog.Println("DB Connection Error!")

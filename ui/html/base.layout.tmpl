@@ -15,12 +15,17 @@
 <a href='/'>Home</a>
 {{if .AuthenticatedUser}}
 <a href='/snippet/create'>Create snippet</a>
-{{end}}
+{{else}}
 <a href='/user/login'>Login</a>
 <a href='/user/signup'>Sign Up</a>
+{{end}}
+
+{{if .AuthenticatedUser}}
 <form method="POST" action="/user/logout">
+<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
 <button>logout</button>
 </form>
+{{end}}
 </nav>
 {{with .Flash}}
 <h1>{{.}}</h1>

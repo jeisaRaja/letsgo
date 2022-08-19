@@ -19,6 +19,7 @@ var functions = template.FuncMap{
 }
 
 type templateData struct {
+	CSRFToken         string
 	AuthenticatedUser int
 	CurrentYear       int
 	Snippet           *models.Snippet
