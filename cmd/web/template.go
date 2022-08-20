@@ -20,7 +20,7 @@ var functions = template.FuncMap{
 
 type templateData struct {
 	CSRFToken         string
-	AuthenticatedUser int
+	AuthenticatedUser *models.User
 	CurrentYear       int
 	Snippet           *models.Snippet
 	Snippets          []*models.Snippet

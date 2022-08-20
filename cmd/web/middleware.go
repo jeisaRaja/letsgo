@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
 	"github.com/justinas/nosurf"
+	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
 func noSurf(next http.Handler) http.Handler {
@@ -46,10 +48,34 @@ func (app *application) panicRecovery(next http.Handler) http.Handler {
 
 func (app *application) requireAuthUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if app.authenticateUser(r) == 0 {
+		if app.authenticateUser(r) == nil {
 			http.Redirect(w, r, "/user/login", 302)
 			return
 		}
 		next.ServeHTTP(w, r)
+	})
+}
+
+func (app *application) authenticate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		exist := app.session.Exists(r, "userID")
+		if !exist {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		user, err := app.users.Get(app.session.GetInt(r, "userID"))
+		if err == models.ErrNoRecord {
+			app.session.Remove(r, "userID")
+			return
+		}
+
+		if err != nil {
+			app.serverError(w, err)
+		}
+
+		ctx := context.WithValue(r.Context(), contextKeyUser, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
+		return
 	})
 }

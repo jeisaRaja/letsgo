@@ -8,10 +8,15 @@ import (
 	"time"
 
 	"github.com/justinas/nosurf"
+	"jeisaRaja.git/snippetbox/pkg/models"
 )
 
-func (app *application) authenticateUser(r *http.Request) int {
-	return app.session.GetInt(r, "userID")
+func (app *application) authenticateUser(r *http.Request) *models.User {
+	user, ok := r.Context().Value(contextKeyUser).(*models.User)
+	if !ok {
+		return nil
+	}
+	return user
 }
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
