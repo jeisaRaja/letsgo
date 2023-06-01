@@ -13,7 +13,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
-	"github.com/joho/godotenv"
 	"jeisaRaja.git/snippetbox/pkg/models/mysql"
 )
 
@@ -31,11 +30,6 @@ type application struct {
 }
 
 func main() {
-
-	envErr := godotenv.Load("ENV")
-	if envErr != nil {
-		fmt.Println(envErr)
-	}
 
 	// tlsConfig := &tls.Config{
 	// 	PreferServerCipherSuites: true,
