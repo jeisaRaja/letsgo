@@ -50,9 +50,9 @@ func main() {
 	MYSQLURL := os.Getenv("MYSQLURL")
 	productionDSN := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLURL, MYSQLDATABASE)
 
+	fmt.Println(MYSQLDATABASE)
 	fmt.Println(productionDSN)
 	// defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
-	fmt.Println(productionDSN)
 	// addr := flag.String("addr", "4000", "HTTP network address")
 	port := os.Getenv("PORT")
 	dsn := flag.String("dsn", productionDSN, "MYSQL Database Pool")
