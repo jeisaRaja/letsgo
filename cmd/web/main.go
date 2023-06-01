@@ -1,7 +1,7 @@
 package main
 
 import (
-	"crypto/tls"
+	// "crypto/tls"
 	"database/sql"
 	"flag"
 	"fmt"
@@ -32,15 +32,15 @@ type application struct {
 
 func main() {
 
-	envErr := godotenv.Load(".env")
+	envErr := godotenv.Load("ENV")
 	if envErr != nil {
 		fmt.Println(envErr)
 	}
 
-	tlsConfig := &tls.Config{
-		PreferServerCipherSuites: true,
-		CurvePreferences:         []tls.CurveID{tls.X25519, tls.CurveP256},
-	}
+	// tlsConfig := &tls.Config{
+	// 	PreferServerCipherSuites: true,
+	// 	CurvePreferences:         []tls.CurveID{tls.X25519, tls.CurveP256},
+	// }
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errlog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
@@ -50,7 +50,8 @@ func main() {
 	productionDSN := fmt.Sprintf("%s:%s@/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE)
 	// defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
 	fmt.Println(productionDSN)
-	addr := flag.String("addr", "4000", "HTTP network address")
+	// addr := flag.String("addr", "4000", "HTTP network address")
+	port := os.Getenv("PORT")
 	dsn := flag.String("dsn", productionDSN, "MYSQL Database Pool")
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key for session")
 	flag.Parse()
@@ -77,19 +78,18 @@ func main() {
 		session:       session,
 		users:         &mysql.UserModel{DB: db},
 	}
-	*addr = "127.0.0.1:" + *addr
+	addr := ":" + port
 	srv := &http.Server{
-		Addr:         *addr,
+		Addr:         addr,
 		ErrorLog:     errlog,
 		Handler:      app.routes(),
-		TLSConfig:    tlsConfig,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
 
-	infoLog.Printf("Starting server on %s", *addr)
-	srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
+	infoLog.Printf("Starting server on %s", addr)
+	srv.ListenAndServe()
 
 }
 
