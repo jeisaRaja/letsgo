@@ -47,7 +47,8 @@ func main() {
 	MYSQLUSER := os.Getenv("MYSQLUSER")
 	MYSQLPASSWORD := os.Getenv("MYSQLPASSWORD")
 	MYSQLDATABASE := os.Getenv("MYSQLDATABASE")
-	productionDSN := fmt.Sprintf("%s:%s@/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE)
+	MYSQLURL := os.Getenv("MYSQLURL")
+	productionDSN := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLURL, MYSQLDATABASE)
 
 	fmt.Println(productionDSN)
 	// defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
