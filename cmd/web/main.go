@@ -42,7 +42,7 @@ func main() {
 	MYSQLPASSWORD := os.Getenv("MYSQLPASSWORD")
 	MYSQLDATABASE := os.Getenv("MYSQLDATABASE")
 	MYSQLURL := os.Getenv("MYSQLURL")
-	productionDSN := fmt.Sprintf("%s:%s@%s/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLURL, MYSQLDATABASE)
+	productionDSN := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLURL, MYSQLDATABASE)
 
 	fmt.Println(MYSQLDATABASE)
 	fmt.Println(productionDSN)
