@@ -48,6 +48,8 @@ func main() {
 	MYSQLPASSWORD := os.Getenv("MYSQLPASSWORD")
 	MYSQLDATABASE := os.Getenv("MYSQLDATABASE")
 	productionDSN := fmt.Sprintf("%s:%s@/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE)
+
+	fmt.Println(productionDSN)
 	// defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
 	fmt.Println(productionDSN)
 	// addr := flag.String("addr", "4000", "HTTP network address")
@@ -79,6 +81,8 @@ func main() {
 		users:         &mysql.UserModel{DB: db},
 	}
 	addr := ":" + port
+
+	fmt.Println(addr)
 	srv := &http.Server{
 		Addr:         addr,
 		ErrorLog:     errlog,
@@ -89,6 +93,7 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on %s", addr)
+	fmt.Println("running now")
 	srv.ListenAndServe()
 
 }
