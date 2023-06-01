@@ -58,7 +58,7 @@ func main() {
 	session.SameSite = http.SameSiteStrictMode
 	db, err := openDB(*dsn)
 	if err != nil {
-		errlog.Println("DB Connection Error!")
+		fmt.Println("DB Connection Error:", err)
 	}
 	defer db.Close()
 
