@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"database/sql"
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
+	"github.com/joho/godotenv"
 	"jeisaRaja.git/snippetbox/pkg/models/mysql"
 )
 
@@ -30,6 +32,11 @@ type application struct {
 
 func main() {
 
+	envErr := godotenv.Load(".env")
+	if envErr != nil {
+		fmt.Println(envErr)
+	}
+
 	tlsConfig := &tls.Config{
 		PreferServerCipherSuites: true,
 		CurvePreferences:         []tls.CurveID{tls.X25519, tls.CurveP256},
@@ -37,10 +44,14 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errlog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
+	MYSQLUSER := os.Getenv("MYSQLUSER")
+	MYSQLPASSWORD := os.Getenv("MYSQLPASSWORD")
+	MYSQLDATABASE := os.Getenv("MYSQLDATABASE")
+	productionDSN := fmt.Sprintf("%s:%s@/%s?parseTime=true", MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE)
+	// defaultDSN := "web:mysqlCirebon01@/snippetbox?parseTime=true"
+	fmt.Println(productionDSN)
 	addr := flag.String("addr", "4000", "HTTP network address")
-	dsn := flag.String("dsn", defaultDSN, "MYSQL Database Pool")
+	dsn := flag.String("dsn", productionDSN, "MYSQL Database Pool")
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key for session")
 	flag.Parse()
 
