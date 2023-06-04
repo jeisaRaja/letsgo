@@ -28,7 +28,7 @@
 <p>{{.AuthenticatedUser.Name}}</p>
   <form method="POST" action="/user/logout" class="navbar-end">
   <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
-  <a class="navbar-item">logout</a>
+  <button type="submmit" class="navbar-item">logout</button>
   </form>
 {{end}}
 </nav>
