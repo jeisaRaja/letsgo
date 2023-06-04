@@ -5,10 +5,17 @@
 <meta charset='utf-8'>
 <title>{{template "title" .}} - Snippetbox</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+  </style>
 </head>
 
 
-<body class="p-5">
+<body class="p-5" style>
 <header>
 
 </header>
@@ -42,9 +49,9 @@
 <h1>{{.}}</h1>
 {{end}}
 {{template "body" .}}
-</body>
 
 {{template "footer" .}}
+</body>
 </html>
 {{end}}
 
