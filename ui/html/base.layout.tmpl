@@ -16,7 +16,6 @@
 <nav class="navbar p-5" role="navigation">
 {{if .AuthenticatedUser}}
 <h1><a  class="navbar-item is-size-4" href='/'>Snippetbox</a></h1>
-
 {{else}}
       <div class="navbar-end">
         <a href='/' class="navbar-item">Home</a>
@@ -27,12 +26,10 @@
 
 {{if .AuthenticatedUser}}
 <p>{{.AuthenticatedUser.Name}}</p>
-<div class="navbar-end">
-  <form method="POST" action="/user/logout">
+  <form method="POST" action="/user/logout" class="navbar-end">
   <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
   <a class="navbar-item">logout</a>
   </form>
-</div>
 {{end}}
 </nav>
 {{if .AuthenticatedUser}}
