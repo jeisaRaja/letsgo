@@ -20,19 +20,25 @@ Form Snippet
                 {{with .Errors.Get "content"}}
                     <label class='error'>{{.}}</label>
                 {{end}}
-            <textarea name='content'>{{.Get "content"}}</textarea>
+            <textarea class="textarea" name='content'>{{.Get "content"}}</textarea>
         </div>
-        <div class="radio">
+        <div class="control">
             {{with .Errors.Get "Expires"}}
                 <label class='error'>{{.}}</label>
             {{end}}
              {{$exp := or (.Get "expires") "1" }}
-            <label for="oneYear">
-                <input type= "radio" name="expires"  value="365" {{if (eq $exp "365")}}checked{{end}} id="oneYear">One Year</label>
-            <label for="oneWeek">
-                <input type= "radio" name="expires"  value="7" {{if (eq $exp "7")}}checked{{end}} id="oneWeek">One Week</label>
-            <label for="oneDay">
-                <input type= "radio" name="expires"  value="1" {{if (eq $exp "1")}}checked{{end}} id="oneDay">One Day</label>
+            <label for="oneYear" class="radio">
+                <input type= "radio" name="expires"  value="365" {{if (eq $exp "365")}}checked{{end}} id="oneYear">
+                One Year
+                </label>
+            <label for="oneWeek" class="radio">
+                <input type= "radio" name="expires"  value="7" {{if (eq $exp "7")}}checked{{end}} id="oneWeek">
+                One Week
+                </label>
+            <label for="oneDay" class="radio">
+                <input type= "radio" name="expires"  value="1" {{if (eq $exp "1")}}checked{{end}} id="oneDay">
+                One Day
+                </label>
         </div>
         <div>
             <button type="submit">Submit</button>
