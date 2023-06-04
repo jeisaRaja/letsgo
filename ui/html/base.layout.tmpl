@@ -1,6 +1,6 @@
 {{define "base"}}
 <!doctype html>
-<html lang='en' style="min-height:100vh;">
+<html lang='en' style="min-height:100vh;" class="has-background-light">
 <head>
 <meta charset='utf-8'>
 <title>{{template "title" .}} - Snippetbox</title>
@@ -36,7 +36,7 @@
 {{end}}
 </nav>
 {{if .AuthenticatedUser}}
-<a href='/snippet/create' class="button mt-5">Create snippet</a>
+<a href='/snippet/create' class="button mt-5 is-dark">Create snippet</a>
 {{end}}
 
 {{with .Flash}}
