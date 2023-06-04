@@ -13,7 +13,7 @@
 <header>
 
 </header>
-<nav class="navbar p-5 has-background-success-light" role="navigation">
+<nav class="navbar p-5 has-background-success-light mx-5" role="navigation">
 {{if .AuthenticatedUser}}
 <h1><a  class="navbar-item is-size-4" href='/'>Snippetbox</a></h1>
 
@@ -36,7 +36,7 @@
 {{end}}
 </nav>
 {{if .AuthenticatedUser}}
-<a href='/snippet/create' class="button mt-5 is-dark">Create snippet</a>
+<a href='/snippet/create' class="button mt-5 mx-5 is-dark">Create snippet</a>
 {{end}}
 
 {{with .Flash}}
