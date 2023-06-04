@@ -15,7 +15,7 @@
 <nav class="navbar p-5 has-background-light" role="navigation">
 {{if .AuthenticatedUser}}
 <h1><a  class="navbar-item" href='/'>Snippetbox</a></h1>
-<a href='/snippet/create' class="navbar-item">Create snippet</a>
+
 {{else}}
       <div class="navbar-end">
         <a href='/' class="navbar-item">Home</a>
@@ -34,6 +34,10 @@
 </div>
 {{end}}
 </nav>
+{{if .AuthenticatedUser}}
+<a href='/snippet/create' class="button">Create snippet</a>
+{{end}}
+
 {{with .Flash}}
 <h1>{{.}}</h1>
 {{end}}
