@@ -1,7 +1,7 @@
 {{template "base" .}}
 {{define "title"}}Signup{{end}}
 {{define "body"}}
-<form action='/user/signup' method='POST' novalidate>
+<form action='/user/signup' method='POST' novalidate class="p-5">
 <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
 {{with .Form}}
 <div>
@@ -9,7 +9,7 @@
 {{with .Errors.Get "name"}}
 <label class='error'>{{.}}</label>
 {{end}}
-<input type='text' name='name' value='{{.Get "name"}}'>
+<input class="name" type='text' name='name' value='{{.Get "name"}}'>
 </div>
 <div>
 <label>Email:</label>

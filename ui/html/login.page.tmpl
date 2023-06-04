@@ -1,7 +1,7 @@
 {{template "base" .}}
 {{define "title"}}Login{{end}}
 {{define "body"}}
-<form action='/user/login' method='POST' novalidate>
+<form action='/user/login' method='POST' novalidate class="p-5">
 <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
 {{with .Form}}
 {{with .Errors.Get "generic"}}
@@ -9,7 +9,7 @@
 {{end}}
 <div>
 <label>Email:</label>
-<input type='email' name='email' value='{{.Get "email"}}'>
+<input class="input" type='email' name='email' value='{{.Get "email"}}'>
 </div>
 <div>
 <label>Password:</label>
