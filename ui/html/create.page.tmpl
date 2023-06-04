@@ -5,7 +5,7 @@ Form Snippet
 
 {{define "body"}}
 <div class="subDiv">
-    <form action="/snippet/create" method="POST">
+    <form action="/snippet/create" method="POST" class="container">
     <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     {{with .Form}}
         <div>
