@@ -7,7 +7,8 @@
 
   <h3 class="mt-3 mb-3">Latest Snippets</h3>
   {{if .Snippets}}
-  <table class="table">
+  <div class="container">
+  <table class="table table is-fullwidth">
     <tr>
     <th>Title</th>
     <th>Created</th>
@@ -21,6 +22,7 @@
     </tr>
   {{end}}
   </table>
+  </div>
   {{else}}<h4>There is no snippet</h4>
   {{end}}
 </div>
