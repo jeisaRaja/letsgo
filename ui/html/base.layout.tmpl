@@ -14,7 +14,7 @@
 </header>
 <nav class="navbar p-5 has-background-light" role="navigation">
 {{if .AuthenticatedUser}}
-<h1 class="navbar-item"><a href='/'>Snippetbox</a></h1>
+<h1><a  class="navbar-item" href='/'>Snippetbox</a></h1>
 <a href='/snippet/create' class="navbar-item">Create snippet</a>
 {{else}}
       <div class="navbar-end">
@@ -26,10 +26,12 @@
 
 {{if .AuthenticatedUser}}
 <p>{{.AuthenticatedUser.Name}}</p>
-<form method="POST" action="/user/logout">
-<input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
-<button>logout</button>
-</form>
+<div class="navbar-end">
+  <form method="POST" action="/user/logout">
+  <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+  <a class="navbar-item">logout</a>
+  </form>
+</div>
 {{end}}
 </nav>
 {{with .Flash}}
