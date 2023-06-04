@@ -1,6 +1,6 @@
 {{define "base"}}
 <!doctype html>
-<html lang='en'>
+<html lang='en' style="min-height:100vh;">
 <head>
 <meta charset='utf-8'>
 <title>{{template "title" .}} - Snippetbox</title>
@@ -9,7 +9,7 @@
 </head>
 
 
-<body class="p-5" style="height:100vh; display:flex; flex-direction:flex-col; background-color:black;">
+<body class="p-5" style="height:100%; display:flex; flex-direction:flex-col; background-color:black;">
 <header>
 
 </header>
@@ -44,8 +44,8 @@
 {{end}}
 {{template "body" .}}
 
-{{template "footer" .}}
 </body>
+{{template "footer" .}}
 </html>
 {{end}}
 
